@@ -1,17 +1,42 @@
-body {
-    width: 300px;
+.card {
+    background: white;
+    border-radius: 12px;
     padding: 16px;
-    font-family: Arial, sans-serif;
+    margin-bottom: 18px;
 }
 
-button {
-    width: 100%;
-    padding: 10px;
+.label {
+    font-size: 12px;
+    color: #5f6368;
+    margin-bottom: 4px;
+}
+
+.value {
     font-size: 15px;
+    font-weight: 600;
+    color: #202124;
+    word-break: break-word;
+}
+
+.divider {
+    height: 1px;
+    background: #ececec;
+    margin: 14px 0;
+}
+
+.secondary {
+    width: 100%;
+    margin-top: 12px;
+
+    background: transparent;
+    border: none;
+
+    color: #d93025;
+    font-weight: 600;
+
     cursor: pointer;
 }
 
-#status {
-    margin-top: 12px;
-    font-size: 13px;
+.secondary:hover {
+    text-decoration: underline;
 }
