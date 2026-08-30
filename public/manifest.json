@@ -1,12 +1,8 @@
 {
   "manifest_version": 3,
-
   "name": "AIMS Timetable to Google Calendar",
-
   "description": "Sync IIT Hyderabad AIMS timetable with Google Calendar.",
-
   "version": "1.0.0",
-
   "permissions": [
     "identity",
     "storage",
@@ -14,20 +10,16 @@
     "activeTab",
     "scripting"
   ],
-
   "host_permissions": [
     "https://aims.iith.ac.in/*",
     "https://www.googleapis.com/*"
   ],
-
   "background": {
     "service_worker": "background.js"
   },
-
   "action": {
     "default_popup": "src/popup/popup.html"
   },
-
   "content_scripts": [
     {
       "matches": [
@@ -39,10 +31,17 @@
       "run_at": "document_idle"
     }
   ],
-
+  "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqcg5xRvWelYHbYl4YOMRtMTZVl6pykZCpyRctUiu16lvd00g/Xy2W+8N19Tt+s8Odrga/mr8pip1i09yEVvHVuKIlsqd6v+IrGLK2AlHHrFSRbFGTEyVm3CEcqBiRP+yETf+Es0MZYmBJlhW9KKLxpRBxypCwLZJhQUG3krOR/BK1JGX25xAuTZThP1UIKWBSRg3rauoOEgzo8UuPJJiiNRVdHB0Zn6ZjV2pUFZ1wVSQP81Lg7/CyElWkgaXinKfQailAurqnMjNqQAIRWVW0QF0/vieJeKnaUCoKylG9fHX86aun+wmYoQbI/wRUNKIKVcAPMIvCzAuzIYZtMqxcQIDAQAB",
   "icons": {
     "16": "icon16.png",
     "48": "icon48.png",
     "128": "icon128.png"
+  },
+  "oauth2": {
+    "client_id": "YOUR_CLIENT_ID.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/calendar",
+      "https://www.googleapis.com/auth/userinfo.email"
+    ]
   }
 }
