@@ -1,49 +1,73 @@
-import {
-    getRegisteredCourses,
-    getCourseTimetable
-} from "../aims/api.js";
+    import {
+        getRegisteredCourses,
+        getBatchTimetable
+    } from "../aims/api.js";
 
-import { buildCourses } from "../aims/parser.js";
-import { buildCalendarEvents } from "../calendar/eventBuilder.js";
-import { getStudentId } from "../aims/session.js";
+    import { buildCourses } from "../aims/parser.js";
+    import { buildCalendarEvents } from "../calendar/eventBuilder.js";
+    import { getStudentId } from "../aims/session.js";
 
-(async () => {
+    let generatedEvents = [];
 
-    console.log("AIMS2GCal started");
-    console.log("Content script sees:", window.studentId);
-    const studentId = getStudentId();
-    console.log(`Student ID: ${studentId}`);
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
-    // Fetch registered courses
-    const history = await getRegisteredCourses(studentId);
+        if (message.type === "GET_EVENTS") {
+            sendResponse({
+                events: generatedEvents
+            });
+        }
 
-    // Fetch every timetable in parallel
-    const timetableResponses = await Promise.all(
-        history.map(course =>
-            getCourseTimetable(course.runningCourseId, studentId)
-        )
-    );
-
-    // Flatten [[...], [...], [...]] -> [...]
-    const timetable = timetableResponses.flat();
-
-    // Build lookup map
-    const timetableMap = new Map();
-
-    timetable.forEach(entry => {
-        timetableMap.set(String(entry.runningCourseId), entry);
+        return true;
     });
 
-    // Normalize data
-    const courses = buildCourses(history, timetableMap);
+    (async () => {
 
-    // Build calendar events
-    const events = buildCalendarEvents(courses);
+        console.log("AIMS2GCal started");
+        console.log("Content script sees:", window.studentId);
 
-    console.log("Courses:", courses);
-    console.log("Events:", events);
+        const studentId = getStudentId();
 
-    console.log(`Fetched ${courses.length} courses`);
-    console.log(`Generated ${events.length} calendar events`);
+        console.log(`Student ID: ${studentId}`);
 
-})();
+        // Fetch course history
+        const history = await getRegisteredCourses(studentId);
+
+        // Determine the latest semester
+        const latestSemester = history
+            .map(course => course.periodName)
+            .sort()
+            .at(-1);
+
+        console.log(`Current semester: ${latestSemester}`);
+
+        // Keep only current semester courses
+        const currentHistory = history.filter(
+            course => course.periodName === latestSemester
+        );
+
+        const runningCourseIds =
+            currentHistory.map(
+                course => course.runningCourseId
+            );
+
+        const timetable =
+            await getBatchTimetable(
+                runningCourseIds,
+                studentId
+            );
+        console.log("Timetable length:", timetable.length);
+        console.log("First timetable object:", timetable[0]);
+
+        // Normalize courses
+        const courses = buildCourses(currentHistory, timetable);
+
+        // Build calendar events
+        generatedEvents = buildCalendarEvents(courses);
+
+        console.log("Courses:", courses);
+        console.log("Events:", generatedEvents);
+
+        console.log(`Fetched ${courses.length} courses`);
+        console.log(`Generated ${generatedEvents.length} calendar events`);
+
+    })();
