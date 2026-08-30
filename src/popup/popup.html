@@ -1,11 +1,59 @@
 <!DOCTYPE html>
-<html>
-<head>
-    <title>AIMS2GCal</title>
-</head>
-<body>
-    <button id="btn">Ping Background</button>
+<html lang="en">
 
-    <script type="module" src="./popup.js"></script>
+<head>
+    <meta charset="UTF-8">
+    <title>AIMS2GCal</title>
+
+    <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>AIMS2GCal</h1>
+
+        <p class="subtitle">
+            Sync your IIT Hyderabad timetable with Google Calendar.
+        </p>
+
+        <div class="card">
+
+            <div class="label">
+                Google Account
+            </div>
+
+            <div id="email" class="value">
+                Not signed in
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="label">
+                Calendar
+            </div>
+
+            <div class="value">
+                IITH Timetable
+            </div>
+
+        </div>
+
+        <button id="actionBtn" class="primary">
+            Loading...
+        </button>
+
+        <p id="message" class="message"></p>
+
+        <button id="logoutBtn" class="secondary">
+            Sign Out
+        </button>
+
+    </div>
+
+    <script type="module" src="popup.js"></script>
+
 </body>
+
 </html>
