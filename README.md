@@ -16,7 +16,7 @@ Sync your IIT Hyderabad AIMS timetable with Google Calendar.
 - Google Cloud project with Calendar API enabled
 - OAuth 2.0 Client ID (Chrome Extension type)
 
-## Quick Start
+## Quick Start (Ps: i'm broke so couldn't publish to chrome web store please clone/fork and use locally tqsm)
 
 ```bash
 # 1. Clone and install
@@ -155,7 +155,7 @@ npm run build
 
 | Issue | Fix |
 |-------|-----|
-| "Open your AIMS Course History page first" | Navigate to `https://aims.iith.ac.in/aims/courseReg/viewMyCourseHistory` before syncing |
+| "Open your AIMS Course History page first" | Navigate to `https://aims.iith.ac.in/aims/courseReg/myCrsHistoryPage` before syncing |
 | OAuth redirect_uri_mismatch | Verify Extension ID in GCP matches loaded extension |
 | Rate limit errors | Built-in retry with backoff; wait and retry |
 | No events generated | Check console (F12) on AIMS page for errors |
