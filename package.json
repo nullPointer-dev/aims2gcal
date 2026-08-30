@@ -6,7 +6,8 @@
 
   "scripts": {
     "dev": "vite build --watch",
-    "build": "vite build"
+    "build": "vite build",
+    "setup": "node setup.js"
   },
 
   "devDependencies": {
