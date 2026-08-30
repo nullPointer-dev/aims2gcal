@@ -8,29 +8,61 @@ const DAY_MAP = {
     Sunday: "SU"
 };
 
-function parseSlot(slotString) {
-    return slotString
-        .split(",")
-        .map(entry => {
-            const [day, start, end] = entry
-                .trim()
-                .split("-")
-                .map(part => part.trim());
+function parseSlot(slot) {
 
-            return {
-                day,
-                rruleDay: DAY_MAP[day],
-                start,
-                end
-            };
-        });
+    const [day, start, end] =
+        slot.slotPeriodCdDays
+            .split("-")
+            .map(part => part.trim());
+
+    return {
+
+        day,
+        rruleDay: DAY_MAP[day],
+        start,
+        end,
+
+        // Semester dates from AIMS
+        startDate: slot.newFrmDt,
+        endDate: slot.eftToDt
+
+    };
+
 }
 
-export function buildCourses(history, timetableMap) {
-    return history
-        .filter(course => timetableMap.has(String(course.runningCourseId)))
-        .map(course => {
-            const timetable = timetableMap.get(String(course.runningCourseId));
+export function buildCourses(history, timetable) {
+
+    // runningCourseId -> slots[]
+    const timetableMap = new Map();
+
+    for (const slot of timetable) {
+        const id = String(slot.runningCourseId);
+        if (!timetableMap.has(id)) {
+            timetableMap.set(id, []);
+        }
+        timetableMap.get(id).push(slot);
+    }
+    const coursesWithoutTimetable = history.filter(
+        course => !timetableMap.has(String(course.runningCourseId))
+    );
+
+    if (coursesWithoutTimetable.length) {
+        console.warn(
+            "Courses without timetable:",
+            coursesWithoutTimetable.map(course => ({
+                code: course.courseCd,
+                name: course.courseName
+            }))
+        );
+    }
+
+    return history.filter(course =>
+            timetableMap.has(String(course.runningCourseId))
+        ).map(course => {
+            const slots =
+                timetableMap
+                    .get(String(course.runningCourseId))
+                    .map(parseSlot);
 
             return {
                 runningCourseId: String(course.runningCourseId),
@@ -39,8 +71,13 @@ export function buildCourses(history, timetableMap) {
                 instructor: course.instructorName,
                 credits: course.credits,
                 semester: course.periodName,
-                segment: timetable.runningCourseSegmentName,
-                slots: parseSlot(timetable.slotPeriodCd)
+                segment:
+                    timetableMap
+                        .get(String(course.runningCourseId))[0]
+                        .segName,
+                slots
             };
+
         });
+
 }
