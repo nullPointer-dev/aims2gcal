@@ -9,30 +9,31 @@ const DAY_MAP = {
 };
 
 function parseSlot(slotString) {
-    return slotString.split(",").map(entry => {
-        const [day, time] = entry.split("-");
+    return slotString
+        .split(",")
+        .map(entry => {
+            const [day, start, end] = entry
+                .trim()
+                .split("-")
+                .map(part => part.trim());
 
-        const [start, end] = time.split("-");
-
-        return {
-            day,
-            rruleDay: DAY_MAP[day],
-            start,
-            end
-        };
-    });
+            return {
+                day,
+                rruleDay: DAY_MAP[day],
+                start,
+                end
+            };
+        });
 }
 
 export function buildCourses(history, timetableMap) {
-
     return history
-        .filter(course => timetableMap.has(course.runningCourseId))
+        .filter(course => timetableMap.has(String(course.runningCourseId)))
         .map(course => {
-
-            const timetable = timetableMap.get(course.runningCourseId);
+            const timetable = timetableMap.get(String(course.runningCourseId));
 
             return {
-                runningCourseId: course.runningCourseId,
+                runningCourseId: String(course.runningCourseId),
                 courseCode: course.courseCd,
                 courseName: course.courseName,
                 instructor: course.instructorName,
@@ -41,7 +42,5 @@ export function buildCourses(history, timetableMap) {
                 segment: timetable.runningCourseSegmentName,
                 slots: parseSlot(timetable.slotPeriodCd)
             };
-
         });
-
 }
