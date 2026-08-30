@@ -1,0 +1,48 @@
+{
+  "manifest_version": 3,
+
+  "name": "AIMS Timetable to Google Calendar",
+
+  "description": "Sync IIT Hyderabad AIMS timetable with Google Calendar.",
+
+  "version": "1.0.0",
+
+  "permissions": [
+    "identity",
+    "storage",
+    "cookies",
+    "activeTab",
+    "scripting"
+  ],
+
+  "host_permissions": [
+    "https://aims.iith.ac.in/*",
+    "https://www.googleapis.com/*"
+  ],
+
+  "background": {
+    "service_worker": "background.js"
+  },
+
+  "action": {
+    "default_popup": "src/popup/popup.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": [
+        "https://aims.iith.ac.in/*"
+      ],
+      "js": [
+        "content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ],
+
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
+}
